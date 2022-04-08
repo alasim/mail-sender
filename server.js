@@ -7,9 +7,9 @@ const router = express.Router();
 const app = express();
 const port = 3000;
 const log = console.log;
-sgMail.setApiKey(
-  "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"
-);
+
+sgMail.setApiKey(process.env.SG_KEY);
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.get("/", (req, res) => {
@@ -19,11 +19,12 @@ app.get("/", (req, res) => {
 let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "klwebcoClients@gmail.com", // hello@authcms.com
-    pass: "Activate_1234$",
+    user: process.env.SENDER_EMAIL, // hello@authcms.com
+    pass: process.env.SENDER_PASSWORD,
   },
 });
-
+console.log("process.env.SENDER_EMAIL");
+console.log(process.env.SENDER_EMAIL);
 app.post("/sendwithsg", (req, res) => {
   var subject = req.body.subject;
   var desc = req.body.desc;
@@ -45,6 +46,7 @@ app.post("/sendwithnodem", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
 function smail(to, subject, desc) {
   const msg = {
     to,
