@@ -23,65 +23,61 @@ let transporter = nodemailer.createTransport({
     pass: process.env.SENDER_PASSWORD,
   },
 });
-console.log("process.env.SENDER_EMAIL");
-console.log(process.env.SENDER_EMAIL);
-app.post("/sendwithsg", (req, res) => {
+
+app.post("/sendsg", (req, res) => {
   var subject = req.body.subject;
-  var desc = req.body.desc;
+  var text = req.body.text;
+  var html = req.body.html;
   var to = req.body.to;
   console.log(req.body);
-  smail(to, subject, desc);
-  res.end("yes");
-});
-
-app.post("/sendwithnodem", (req, res) => {
-  var subject = req.body.subject;
-  var desc = req.body.desc;
-  var to = req.body.to;
-  console.log(req.body);
-  nmailer(to, subject, desc);
-  res.end("yes");
-});
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
-function smail(to, subject, desc) {
   const msg = {
     to,
     from: {
       name: "KLWEBCO",
-      email: "klwebcoClients@gmail.com",
-    }, // Use the email address or domain you verified above
-    subject: "Sending with Twilio SendGrid is Fun",
-    text: "and easy to do anywhere, even with Node.js",
-    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+      email: "hello@authcms.com",
+    },
+    subject,
+    html,
   };
 
-  sgMail.send(msg).then(
-    () => {},
-    (error) => {
-      console.error(error);
+  sgMail
+    .send(msg)
+    .then(() => res.status(200).send({ send: "OK" }))
+    .catch((error) => {
+      console.log(error);
+      res.status(400).send({ send: "NOT SENT" });
+    });
+});
 
-      if (error.response) {
-        console.error(error.response.body);
-      }
-    }
-  );
-}
-function nmailer(to, subject, desc) {
+app.post("/sendnd", (req, res) => {
+  var subject = req.body.subject;
+  var text = req.body.text;
+  var html = req.body.html;
+  var to = req.body.to;
+
   let mailOptions = {
     from: "klwebcoClients@gmail.com",
     to,
     subject,
-    text: desc,
+    html,
   };
 
-  transporter.sendMail(mailOptions, (err, data) => {
-    if (err) {
-      return log("Error occurs", err);
-    }
-    return log("Email sent!!!");
-  });
-}
+  try {
+    transporter.sendMail(mailOptions, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.status(400).send({ send: "SOMETHING WRONG" });
+      }
+      res.status(200).send({ send: "OK" });
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Mail sender listening on port ${port}`);
+});
+
+// beginner2professional@gmail.com
+// 222.loveU2much?b2p
