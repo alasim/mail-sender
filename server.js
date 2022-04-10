@@ -81,3 +81,4 @@ app.listen(port, () => {
 
 // beginner2professional@gmail.com
 // 222.loveU2much?b2p
+// curl -d "to=alasim.mail@gmail.com&subject=nodemailer&html=<i>Hello mailer</i>" -X POST http://localhost:3000/sendnd
